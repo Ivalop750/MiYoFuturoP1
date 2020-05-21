@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+  <title>MiYoFututo</title>
+
+  <style>
+    @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
+
+    body {
+      background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+      background: linear-gradient(to right, #25c481, #25b7c4);
+      font-family: 'Roboto', sans-serif;
+    }
+
+    table {
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .tbl-header {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .tbl-content {
+      height: 300px;
+      overflow-x: auto;
+      margin-top: 0px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    th {
+      padding: 20px 15px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 12px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 15px;
+      text-align: left;
+      vertical-align: middle;
+      font-weight: 300;
+      font-size: 12px;
+      color: #fff;
+      border-bottom: solid 1px rgba(255, 255, 255, 0.1);
+    }
+
+    .boton_personalizado {
+      text-decoration: none;
+      padding: 10px;
+      font-weight: 600;
+      font-size: 20px;
+      color: #ffffff;
+      background-color: #1883ba;
+      border-radius: 6px;
+      border: 2px solid #82c6f6;
+    }
+
+    .boton_personalizado:hover {
+      color: #1883ba;
+      background-color: #ffffff;
+    }
+  </style>
+
+  <!-- Required Stylesheets -->
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+
+  <!-- Required scripts -->
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- script para las pestañas -->
+  <script>
+    function openWindow(evt, name) {
+      // Declare all variables
+      var i, tabcontent, tablinks;
+
+      // Get all elements with class="tabcontent" and hide them
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+
+      // Get all elements with class="tablinks" and remove the class "active"
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+
+      // Show the current tab, and add an "active" class to the button that opened the tab
+      document.getElementById(name).style.display = "block";
+      evt.currentTarget.className += " active";
+    }</script>
+</head>
+
+<body>
+  <!-- Our application root element -->
+  <div class="tab">
+    <center>
+      <button class="boton_personalizado" class="tablinks" onclick="openWindow(event, 'Alumnos')">Alumnos</button>
+      <button class="boton_personalizado" class="tablinks" onclick="openWindow(event, 'Institutos')">Institutos</button>
+      <button class="boton_personalizado" class="tablinks"
+        onclick="openWindow(event, 'Universidades')">Universidades</button>
+  </div>
+
+  </center>
+  <div id="app">
+
+    <div id="Institutos" class="tabcontent">
+      <b-container>
+
+        <b-jumbotron header="Mi Yo Futuro" lead="Expertos en orientación escolar.">
+          <!-- <p>For more information visit our website</p>
+          <b-btn variant="primary" href="https://bootstrap-vue.js.org/">More Info</b-btn> -->
+        </b-jumbotron>
+
+        <center>
+          <b-container>
+
+            <p class="h1">Registro de Instituto</p>
+
+            <br>
+            <b-form @submit="onSubmitInstitutos" @reset="onReset" v-if="show">
+              <b-form-group id="input-group-name" label="Nombre:" label-for="input-name">
+                <b-form-input id="input-name" v-model="formInstitutos.name" required
+                  placeholder="Introduce un nombre de instituto"></b-form-input>
+              </b-form-group>
+
+              <b-form-group id="input-group-telephone" label="Número de telefono:" label-for="input-telephone">
+                <b-form-input id="input-telephone" v-model="formInstitutos.telephone" maxlength="9" required>
+                </b-form-input>
+              </b-form-group>
+
+              <b-form-group id="input-group-address" label="Dirección:" label-for="input-address">
+                <b-form-input id="input-address" v-model="formInstitutos.address" type="text" required></b-form-input>
+              </b-form-group>
+
+
+              <b-button type="submit" variant="primary">Submit</b-button>
+              <b-button type="reset" variant="danger">Reset</b-button>
+
+            </b-form>
+            <br>
+            
+            </b-container>
+          </center>
+      
+      
+      <b-form>
+        <b-form-group id="input-group instituto" label="Id de instituto:" label-for="input-instituto">
+          <b-form-input
+            id="input-instituto"
+            v-model="idInstituto"
+          ></b-form-input>
+        </b-form-group>
+        <b-button v-on:click="getInstituto">Mostrar</b-button>
+      </b-form>
+
+
+      <div class="mt-3 mb-3"  class="tbl-header" v-if="showGetOneInsti">
+        <table>
+
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Dirección</th>                
+            </tr>
+          </thead>
+
+          <tbody class="tbl-content">
+              <td width="18px">{{ JSON.parse(getOneInsti).name }}</td>
+              <td width="18px">{{ JSON.parse(getOneInsti).telephone }}</td>
+              <td width="18px">{{ JSON.parse(getOneInsti).address }}</td>     
+          </tbody>
+        </table>
+      </div>
+
+      <br/>
+      <br/>
+        <b-button v-on:click="mostrarInstitutos">Mostrar Institutos</b-button>
+        <div class="mt-3 mb-3"  class="tbl-header" v-if="showGetAllInsti">
+          <table>
+
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+              </tr>
+            </thead>
+
+            <tbody class="tbl-content">
+
+              <tr v-for="(i,index) in getAllInsti">
+                <td width="18px">{{ JSON.parse(i).name }}</td>
+                <td width="18px">{{ JSON.parse(i).telephone }}</td>
+                <td width="18px">{{ JSON.parse(i).address }}</td>
+                <td width="18px">
+                  <b-button class="btn btn-danger btn-sm" @click="borrarInstituto(index,JSON.parse(i).id)">Eliminar
+                  </b-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </b-container>
+    </div>
+
+    <div id="Alumnos" class="tabcontent">
+      <b-container>
+
+        <b-jumbotron header="Mi Yo Futuro" lead="Expertos en orientación escolar."></b-jumbotron>
+
+        <center>
+          <b-container>
+            <p class="h1">Registro de Alumno</p>
+            <br>
+
+            <b-form @submit="onSubmitAlumnos" @reset="onReset" v-if="show">
+
+              <b-form-group id="input-group-name" label="Nombre:" label-for="input-name">
+                <b-form-input id="input-name" v-model="formAlumnos.name" required
+                  placeholder="Introduce el nombre del alumno"></b-form-input>
+              </b-form-group>
+
+              <b-form-group id="input-group-telephone" label="Número de teléfono:" label-for="input-telephone">
+                <b-form-input id="input-telephone" v-model="formAlumnos.telephone" maxlength="9" required>
+                </b-form-input>
+              </b-form-group>
+
+              <b-form-group id="input-group-address" label="Dirección:" label-for="input-address">
+                <b-form-input id="input-address" v-model="formAlumnos.address" type="text" required></b-form-input>
+              </b-form-group>
+
+
+              <b-button type="submit" variant="primary">Submit</b-button>
+              <b-button type="reset" variant="danger">Reset</b-button>
+
+            </b-form>
+
+            <b-form>
+              <b-form-group id="input-group alumno" label="Alumno por ID:" label-for="input-alumno">
+                <b-form-input id="input-alumno" v-model="idAlumno"
+                  placeholder="Introduce el id de un alumno para mostrar sus datos"></b-form-input>
+              </b-form-group>
+              <b-button v-on:click="getAlumno">Mostrar</b-button>
+            </b-form>
+            <div class="mt-3 mb-3" class="tbl-header" v-if="showGetOneAlumno">
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                  </tr>
+
+                </thead>
+
+                <tbody class="tbl-content">
+
+
+                  <td width="18px">{{ JSON.parse(getOneAlumno).name }}</td>
+                  <td width="18px">{{ JSON.parse(getOneAlumno).telephone }}</td>
+                  <td width="18px">{{ JSON.parse(getOneAlumno).address }}</td>
+                  <td width="18px">
+                  </td>
+                </tbody>
+              </table>
+            </div>
+            <br>
+            <br>
+            <b-alert variant="success" :show="showAlertAlumnos">Alumnos registrados:</b-alert>
+
+          </b-container>
+        </center>
+
+        <div class="mt-3 mb-3" class="tbl-header">
+          <table>
+
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+              </tr>
+            </thead>
+
+            <tbody class="tbl-content">
+              <tr v-for="(alum, index) in alumnos">
+                <td width="18px">{{ JSON.parse(alum).name }}</td>
+                <td width="18px">{{ JSON.parse(alum).telephone }}</td>
+                <td width="18px">{{ JSON.parse(alum).address }}</td>
+                <td width="18px">
+                  <b-button class="btn btn-danger btn-sm" @click="deleteAlumno(index)">Eliminar</b-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </b-container>
+    </div>
+
+    <div id="Universidades" class="tabcontent">
+      <b-container>
+
+        <b-jumbotron header="Mi Yo Futuro" lead="Expertos en orientación escolar.">
+        </b-jumbotron>
+
+        <center>
+          <b-container>
+            <p class="h1">Registrar Universidad</p>
+            <br>
+            <div class="form-popup" id="formUni">
+              <b-form @submit="onSubmitUniversity" @reset="onResetUni" v-if="show" @de>
+                <b-form-group id="input-group-name" label="Nombre:" label-for="input-name">
+                  <b-form-input id="input-name" v-model="formUniversidades.name" required
+                    placeholder="Introduce el nombre de la universidad"></b-form-input>
+                </b-form-group>
+
+                <b-form-group id="input-group-address" label="Dirección:" label-for="input-address">
+                  <b-form-input id="input-address" v-model="formUniversidades.address" type="text" required
+                    placeholder="Dirección, Ciudad"></b-form-input>
+                </b-form-group>
+
+                <b-form-group id="input-group-type" label="Tipo:" label-for="input-type">
+                  <b-form-input id="input-type" v-model="formUniversidades.type" required
+                    placeholder="Pública o Privada"></b-form-input>
+                </b-form-group>
+
+                <b-form-group id="input-group-webpage" label="Página web:" label-for="input-webpage">
+                  <b-form-input id="input-webpage" v-model="formUniversidades.webpage" required
+                    placeholder="Escriba su página web"></b-form-input>
+                </b-form-group>
+
+                <b-button type="submit" variant="primary">Añadir</b-button>
+                <b-button type="reset" variant="danger">Reset</b-button>
+
+
+              </b-form>
+            </div>
+            <p class="h1">Universidad por ID</p>
+            <br>
+            <b-form>
+              <b-form-group id="input-group universidad" label-for="input-universidad">
+                <b-form-input id="input-universidad" v-model="idUniversidad"
+                  placeholder="Introduce el id de una universidad para mostrar sus datos"></b-form-input>
+              </b-form-group>
+              <b-button v-on:click="getUniversity">Mostrar</b-button>
+            </b-form>
+            <div class="mt-3 mb-3" class="tbl-header" v-if="showGetOneUni">
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>Tipo</th>
+                    <th>Página Web</th>
+                  </tr>
+
+                </thead>
+
+                <tbody class="tbl-content">
+
+
+                  <td width="18px">{{ JSON.parse(getOneUni).name }}</td>
+                  <td width="18px">{{ JSON.parse(getOneUni).address }}</td>
+                  <td width="18px">{{ JSON.parse(getOneUni).type }}</td>
+                  <td width="18px">{{ JSON.parse(getOneUni).webpage }}</td>
+                  <td width="18px">
+                  </td>
+                </tbody>
+              </table>
+            </div>
+        <br>
+            <p class="h1">Todas las universidades</p>
+            <br>
+        <b-button v-on:click="getUniversities">Mostrar Universidades</b-button>
+        <div class="mt-3 mb-3"  class="tbl-header" v-if="showGetAllUni">
+          <table>
+
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Tipo</th>
+                <th>Página Web</th>
+              </tr>
+            </thead>
+
+            <tbody class="tbl-content">
+
+              <tr v-for="(uni, index) in getAllUni">
+                <td width="18px">{{ JSON.parse(uni).name }}</td>
+                <td width="18px">{{ JSON.parse(uni).address }}</td>
+                <td width="18px">{{ JSON.parse(uni).type }}</td>
+                <td width="18px">{{ JSON.parse(uni).webpage }}</td>
+                <td width="18px">
+                  <b-button class="btn btn-danger btn-sm" @click="deleteUniversity(index,JSON.parse(uni).id)">Eliminar
+                  </b-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-container>
+    </div>
+  </div>
+
+
+  <!-- Start running your app -->
+
+  <script>
+    const client = axios.create({
+      baseURL: 'http://localhost:8000',
+/*      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
+   }*/
+      })
+      window.app  = new Vue({
+        el: '#app',
+        data: {
+          countInsti:0,
+          idInstituto: null,
+          getOneInsti: null,
+          getAllInsti:[],
+          institutos: [],
+          formInstitutos:{
+            id: '',
+            name: '',
+            telephone: '',
+            address: ''
+          },
+          idAlumno: null,
+          getOneAlumno: null,
+          alumnos: [],
+          formAlumnos: {
+            name: '',
+            telephone: '',
+            address: ''
+          },
+          countUni: 0,
+          idUniversidad: null,
+          getOneUni: null,
+          getAllUni: [],
+          universidades: [],
+          formUniversidades: {
+            id: '',
+            name: '',
+            address: '',
+            type: '',
+            webpage: ''
+          },
+        show: true,
+        showInstituto: false,
+        //showGetAllInsti: false,
+        //showGetAllUni: false
+      },
+
+      methods: {
+
+        // INSITUTOS
+
+        onSubmitInstitutos(evt) {
+          evt.preventDefault()
+          this.countInsti +=1
+          this.formInstitutos.id = this.countInsti
+          this.institutos.push(JSON.stringify(this.formInstitutos))  //OK    
+
+          let instituto = this.formInstitutos
+
+          console.log(instituto)
+          client.post('/instituto',
+            {
+              "id": this.countInsti,
+              "name": instituto.name,
+              "telephone": instituto.telephone,
+              "address": instituto.address
+            })
+            .then(response => { 
+              if(response.data.result == "OK"){
+                console.log(response.data.result)
+                alert("Instituto registrado")
+              }
+              else{
+                alert("Error al registrar el instituto")
+              }
+            })
+            .catch(error => console.log(error))
+            
+
+
+        },
+
+        getInstituto(evt) {
+  
+          client.get(`/instituto/${this.idInstituto}`)
+            .then(response =>    
+              //this.getOneInsti.push(JSON.stringify(response.data.result))
+              this.getOneInsti = Object.assign(JSON.stringify(response.data.result))
+            )
+            .catch(error => console.log(error))
+          //console.log(this.getInsti)
+          //console.log(JSON.stringify(this.getInsti.name))
+
+          this.showInstituto = true
+        },
+        mostrarInstitutos(evt){
+            
+            this.getAllInsti = []
+            client.get('/instituto')
+            .then(response => {
+              Object.values(response.data.result).map(k => this.getAllInsti.push(JSON.stringify(k)))
+            })
+            .catch(error => console.log(error))  
+            //this.showGetAllInsti = true
+          
+            //console.log(this.institutos)
+
+        },
+        borrarInstituto(index,idInsti){
+            client.delete(`/instituto/${idInsti}`)
+            .then(response => {
+              if(response.data.result == "OK"){
+                console.log(response.data.result)
+                this.getAllInsti.splice(index,1)
+                alert("Instituto Borrado")
+              }
+              else{
+                alert("Error al borrar un instituto")
+              }
+            })
+            .catch(error => console.log(error))
+           
+        },
+
+
+        // ALUMNOS
+
+        onSubmitAlumnos(evt) {
+          evt.preventDefault()
+          this.formAlumnos.id = this.alumnos.length
+          let alumno = this.formAlumnos
+          this.alumnos.push(JSON.stringify(alumno))  //OK
+          client.post('/alumno',
+            {
+              "id": this.alumnos.length,
+              "name": alumno.name,
+              "telephone": alumno.telephone,
+              "address": alumno.address
+            })
+            .then(response => console.log(response.data))
+            .catch(error => console.log(error))
+            
+        },
+
+        deleteAlumno(index, idAlumno) {
+          client.delete(`/alumno/${idAlumno}`)
+            .then(response => console.log(response.data))
+            .catch(error => console.log(error))
+          this.alumnos.splice(index, 1)
+        },
+
+        getAlumno(evt) {
+          console.log("ID pasado: " + this.idAlumno)
+          var found = this.alumnos.find(uni => +JSON.parse(uni).id == this.idAlumno)
+          console.log("Alumno encontrada: " + found)
+          this.getOneAlumno = found
+
+          client.get(`/alumno/${this.idAlumno}`)
+            .then(response => {
+              console.log(response.data.result)
+              this.getAlum = response.data.result
+              console.log(this.getAlum)
+            })
+            .catch(error => console.log(error)) 
+            console.log(this.getInsti)
+            console.log(JSON.stringify(this.getInsti.name))
+            
+            this.showInstituto = true 
+          },
+        
+
+        //UNIVERSIDAD
+        onSubmitUniversity(evt) {
+          evt.preventDefault()
+          this.countUni +=1
+          this.formUniversidades.id = this.countUni
+          this.universidades.push(JSON.stringify(this.formUniversidades))  //OK
+          let universidad = this.formUniversidades
+          client.post('/universidad',
+            {
+              "id": this.countUni,
+              "name": universidad.name,
+              "address": universidad.address,
+              "type": universidad.type,
+              "webpage": universidad.webpage
+            })
+            .then(response =>{
+              console.log(response.data)
+              //console.log(response.statusText)
+              if(response.statusText =='OK'){
+                alert("Universidad registrada con éxito")
+                //this.formUniversidades = ''
+              }else{
+                alert("Registro fallido")
+              }
+
+            } )
+            .catch(error => console.log(error))
+            //alert("Universidad registrada")
+
+          },
+
+        deleteUniversity(index, idUni) {
+          client.delete(`/universidad/${idUni}`)
+            .then(response => {
+              console.log(response.data)
+              if(response.statusText =='OK'){
+                alert("Universidad eliminada con éxito")
+                //this.formUniversidades = ''
+              }else{
+                alert("No se ha podido eliminar")
+              }
+
+            })
+            .catch(error => console.log(error))
+            this.getAllUni.splice(index,1)
+          },          
+          
+          getUniversity(){
+            //var found = this.universidades.find(uni => JSON.parse(uni).id == this.idUniversidad)
+            //this.getOneUni = found           
+            client.get(`/universidad/${this.idUniversidad}`)
+            .then(response => {
+              //this.getOneUni.push(JSON.stringify(response.data.result))
+              this.getOneUni = Object.assign(JSON.stringify(response.data.result))
+              console.log(response.data.result)
+              //this.getUniversidad = response.data.result
+            })
+            .catch(error => console.log(error)) 
+
+        },          
+        getUniversities(){
+          //console.log("ID pasado: "+ this.idUniversidad)    
+          this.getAllUni = []
+          client.get(`/universidad/`)
+          .then(response => {
+            Object.values(response.data.result).map(k => this.getAllUni.push(JSON.stringify(k)))
+            console.log(response.data.result)
+            //console.log(JSON.stringify(getAllUni))
+          })
+          .catch(error => console.log(error)) 
+        },
+
+        onReset(evt){
+          evt.preventDefault()
+          // Reset our form values
+          this.formInstitutos.name = ''      
+          this.formInstitutos.telephone = ''
+          this.formInstitutos.address = ''
+          this.show = true
+        },
+        onResetUni(evt){
+          evt.preventDefault()
+          // Reset our form values
+          this.formUniversidades.name = ''      
+          this.formInstitutos.address = ''
+          this.formUniversidades.type = ''
+          this.formUniversidades.webpage = ''
+          this.show = true
+        },
+      
+      },
+
+      computed: {
+        showAlert() {
+          return this.institutos.length > 0 ? true : false
+        },
+        showAlertUniversity() {
+          return this.universidades.length > 0 ? true : false
+
+        },
+        showAlertAlumnos() {
+          return this.alumnos.length > 0 ? true : false
+        },
+        showGetOneInsti() {
+          return this.getOneInsti != null ? true : false
+        },
+        showGetAllInsti(){
+          return this.getAllInsti.length > 0 ? true : false
+        },
+        showGetAllUni(){
+          return this.getAllUni.length > 0 ? true : false
+        },
+        showGetOneUni() {
+          return this.getOneUni != null ? true : false
+        },
+        showGetOneAlumno() {
+          return this.getOneAlumno != null ? true : false
+        }
+
+      }
+    })
+  </script>
+</body>
+
+</html>
